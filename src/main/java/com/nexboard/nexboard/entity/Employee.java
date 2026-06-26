@@ -3,7 +3,9 @@ package com.nexboard.nexboard.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.LocalDateTime;
 import java.util.List;
+
 @Entity
 @Table(name = "employees")
 @Getter
@@ -22,6 +24,9 @@ public class Employee {
 
     @Column(unique = true)
     private String email; 
+
+    // Employee creation date used for hiring and onboarding analytics.
+    private LocalDateTime createdAt;
 
     // Many employees can belong to one department
     @ManyToOne

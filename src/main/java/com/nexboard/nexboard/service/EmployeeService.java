@@ -9,6 +9,7 @@ import com.nexboard.nexboard.repository.DepartmentRepository;
 import com.nexboard.nexboard.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,11 +17,14 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
+    private final WorkflowTemplateService workflowTemplateService;
 
     public EmployeeService(EmployeeRepository employeeRepository,
-                           DepartmentRepository departmentRepository) {
+                           DepartmentRepository departmentRepository,
+                           WorkflowTemplateService workflowTemplateService) {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
+        this.workflowTemplateService = workflowTemplateService;
     }
 
     // Create a new employee and assign department
@@ -38,8 +42,12 @@ public class EmployeeService {
         employee.setLastName(requestDto.getLastName());
         employee.setEmail(requestDto.getEmail());
         employee.setDepartment(department);
+        employee.setCreatedAt(LocalDateTime.now());
 
         Employee savedEmployee = employeeRepository.save(employee);
+
+        // Assign the department onboarding path if one is configured.
+        workflowTemplateService.autoAssignWorkflowToEmployee(savedEmployee);
 
         return new EmployeeResponseDto(
                 savedEmployee.getId(),

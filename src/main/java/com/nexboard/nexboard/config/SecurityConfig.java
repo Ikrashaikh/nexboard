@@ -3,11 +3,13 @@ package com.nexboard.nexboard.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -22,8 +24,19 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                );
+                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers("/departments/**").hasAnyRole("ADMIN", "HR")
+                        .requestMatchers("/employees/**").hasAnyRole("ADMIN", "HR", "MANAGER")
+                        .requestMatchers("/dashboard/**").hasAnyRole("ADMIN", "HR", "MANAGER")
+                        .requestMatchers("/analytics/**").hasAnyRole("ADMIN", "HR", "MANAGER")
+                        .requestMatchers("/workflow-templates/progress/**").hasAnyRole("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+                        .requestMatchers("/workflow-templates/**").hasAnyRole("ADMIN", "HR", "MANAGER")
+                        .requestMatchers("/tasks/overdue", "/tasks/analytics/**").hasAnyRole("ADMIN", "HR", "MANAGER")
+                        .requestMatchers("/tasks/**").hasAnyRole("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+                        .requestMatchers("/audit-logs/**").hasAnyRole("ADMIN", "HR")
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

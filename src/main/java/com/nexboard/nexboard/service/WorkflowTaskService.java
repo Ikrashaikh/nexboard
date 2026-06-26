@@ -14,6 +14,7 @@ import com.nexboard.nexboard.repository.WorkflowTaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +126,12 @@ public class WorkflowTaskService {
 
         // Update task status
         task.setStatus(requestDto.getStatus());
+
+        if (requestDto.getStatus() == TaskStatus.COMPLETED) {
+            task.setCompletedAt(LocalDateTime.now());
+        } else {
+            task.setCompletedAt(null);
+        }
 
         WorkflowTask updatedTask =
                 workflowTaskRepository.save(task);

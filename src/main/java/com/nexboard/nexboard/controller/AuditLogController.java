@@ -2,6 +2,7 @@ package com.nexboard.nexboard.controller;
 
 import com.nexboard.nexboard.dto.AuditLogResponseDto;
 import com.nexboard.nexboard.service.AuditLogService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class AuditLogController {
 
     // Get all audit logs
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR')")
     public List<AuditLogResponseDto> getAllLogs() {
 
         return auditLogService.getAllLogs();

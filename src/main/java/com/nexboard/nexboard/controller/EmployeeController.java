@@ -4,6 +4,7 @@ import com.nexboard.nexboard.dto.EmployeeRequestDto;
 import com.nexboard.nexboard.dto.EmployeeResponseDto;
 import com.nexboard.nexboard.service.EmployeeService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class EmployeeController {
 
     // Create employee
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR')")
     public EmployeeResponseDto createEmployee(
             @Valid @RequestBody EmployeeRequestDto requestDto) {
 
@@ -29,6 +31,7 @@ public class EmployeeController {
 
     // Get all employees
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER')")
     public List<EmployeeResponseDto> getAllEmployees() {
 
         return employeeService.getAllEmployees();
@@ -36,6 +39,7 @@ public class EmployeeController {
 
     // Get employee by id
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER')")
     public EmployeeResponseDto getEmployeeById(
             @PathVariable Long id) {
 

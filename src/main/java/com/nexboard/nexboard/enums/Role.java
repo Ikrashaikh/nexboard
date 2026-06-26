@@ -5,5 +5,6 @@ public enum Role {
 
     ADMIN,
     HR,
-    MANAGER
+    MANAGER,
+    EMPLOYEE
 }

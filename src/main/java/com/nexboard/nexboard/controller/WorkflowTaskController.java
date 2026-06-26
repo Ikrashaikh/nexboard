@@ -8,6 +8,7 @@ import com.nexboard.nexboard.dto.ReadinessResponseDto;
 import com.nexboard.nexboard.dto.UpdateTaskStatusDto;
 import com.nexboard.nexboard.dto.OverdueTaskResponseDto;
 import com.nexboard.nexboard.dto.BottleneckResponseDto;
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
@@ -23,6 +24,7 @@ public class WorkflowTaskController {
 
     // Create onboarding task
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER')")
     public WorkflowTaskResponseDto createTask(
             @RequestBody WorkflowTaskRequestDto requestDto) {
 
@@ -31,6 +33,7 @@ public class WorkflowTaskController {
 
     // Get tasks assigned to employee
     @GetMapping("/employee/{employeeId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER', 'EMPLOYEE')")
     public List<WorkflowTaskResponseDto> getTasksByEmployee(
             @PathVariable Long employeeId) {
 
@@ -40,6 +43,7 @@ public class WorkflowTaskController {
 
     // Calculate employee readiness score
     @GetMapping("/readiness/{employeeId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER', 'EMPLOYEE')")
     public ReadinessResponseDto getReadinessScore(
             @PathVariable Long employeeId) {
 
@@ -48,6 +52,7 @@ public class WorkflowTaskController {
     }
     // Update task status
     @PutMapping("/{taskId}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER', 'EMPLOYEE')")
     public WorkflowTaskResponseDto updateTaskStatus(
             @PathVariable Long taskId,
             @RequestBody UpdateTaskStatusDto requestDto) {
@@ -56,6 +61,7 @@ public class WorkflowTaskController {
     }
     // Fetch all overdue onboarding tasks
     @GetMapping("/overdue")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER')")
     public List<OverdueTaskResponseDto> getOverdueTasks() {
 
         return workflowTaskService.getOverdueTasks();
@@ -63,6 +69,7 @@ public class WorkflowTaskController {
 
     // Identify onboarding bottleneck stage
     @GetMapping("/analytics/bottleneck")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER')")
     public BottleneckResponseDto getBottleneckStage() {
 
         return workflowTaskService.getBottleneckStage();

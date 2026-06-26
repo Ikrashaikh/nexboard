@@ -10,6 +10,14 @@ public interface WorkflowTaskRepository
 
     List<WorkflowTask> findByEmployeeId(Long employeeId);
 
+    List<WorkflowTask> findByEmployeeIdAndWorkflowStageWorkflowTemplateId(
+            Long employeeId,
+            Long workflowTemplateId);
+
+    boolean existsByEmployeeIdAndWorkflowStageId(
+            Long employeeId,
+            Long workflowStageId);
+
     // Count completed tasks
     long countByEmployeeIdAndStatus(
             Long employeeId,
