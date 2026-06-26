@@ -18,13 +18,16 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
     private final WorkflowTemplateService workflowTemplateService;
+    private final NotificationService notificationService;
 
     public EmployeeService(EmployeeRepository employeeRepository,
                            DepartmentRepository departmentRepository,
-                           WorkflowTemplateService workflowTemplateService) {
+                           WorkflowTemplateService workflowTemplateService,
+                           NotificationService notificationService) {
         this.employeeRepository = employeeRepository;
         this.departmentRepository = departmentRepository;
         this.workflowTemplateService = workflowTemplateService;
+        this.notificationService = notificationService;
     }
 
     // Create a new employee and assign department
@@ -45,6 +48,8 @@ public class EmployeeService {
         employee.setCreatedAt(LocalDateTime.now());
 
         Employee savedEmployee = employeeRepository.save(employee);
+
+        notificationService.sendWelcomeEmployeeNotification(savedEmployee);
 
         // Assign the department onboarding path if one is configured.
         workflowTemplateService.autoAssignWorkflowToEmployee(savedEmployee);

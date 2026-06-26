@@ -35,6 +35,7 @@ public class WorkflowTemplateService {
     private final DepartmentRepository departmentRepository;
     private final EmployeeRepository employeeRepository;
     private final AuditLogService auditLogService;
+    private final NotificationService notificationService;
 
     public WorkflowTemplateService(
             WorkflowTemplateRepository workflowTemplateRepository,
@@ -42,7 +43,8 @@ public class WorkflowTemplateService {
             WorkflowTaskRepository workflowTaskRepository,
             DepartmentRepository departmentRepository,
             EmployeeRepository employeeRepository,
-            AuditLogService auditLogService) {
+            AuditLogService auditLogService,
+            NotificationService notificationService) {
 
         this.workflowTemplateRepository = workflowTemplateRepository;
         this.workflowStageRepository = workflowStageRepository;
@@ -50,6 +52,7 @@ public class WorkflowTemplateService {
         this.departmentRepository = departmentRepository;
         this.employeeRepository = employeeRepository;
         this.auditLogService = auditLogService;
+        this.notificationService = notificationService;
     }
 
     // Create a department-specific onboarding workflow template.
@@ -170,6 +173,9 @@ public class WorkflowTemplateService {
         List<WorkflowTask> savedTasks =
                 workflowTaskRepository.saveAll(tasks);
 
+        savedTasks.forEach(
+                notificationService::sendNewTaskAssignedNotification);
+
         auditLogService.saveAuditLog(
                 "WORKFLOW_ASSIGNED",
                 "Workflow " + workflowTemplate.getName()
@@ -208,7 +214,11 @@ public class WorkflowTemplateService {
                         return;
                     }
 
-                    workflowTaskRepository.saveAll(tasks);
+                    List<WorkflowTask> savedTasks =
+                            workflowTaskRepository.saveAll(tasks);
+
+                    savedTasks.forEach(
+                            notificationService::sendNewTaskAssignedNotification);
 
                     auditLogService.saveAuditLog(
                             "WORKFLOW_AUTO_ASSIGNED",

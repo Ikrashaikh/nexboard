@@ -26,15 +26,18 @@ public class WorkflowTaskService {
     private final WorkflowTaskRepository workflowTaskRepository;
     private final EmployeeRepository employeeRepository;
     private final AuditLogService auditLogService;
+    private final NotificationService notificationService;
 
     public WorkflowTaskService(
             WorkflowTaskRepository workflowTaskRepository,
             EmployeeRepository employeeRepository,
-            AuditLogService auditLogService) {
+            AuditLogService auditLogService,
+            NotificationService notificationService) {
 
         this.workflowTaskRepository = workflowTaskRepository;
         this.employeeRepository = employeeRepository;
         this.auditLogService = auditLogService;
+        this.notificationService = notificationService;
     }
 
     // Create onboarding task for employee
@@ -58,6 +61,8 @@ public class WorkflowTaskService {
 
         WorkflowTask savedTask =
                 workflowTaskRepository.save(task);
+
+        notificationService.sendNewTaskAssignedNotification(savedTask);
 
         return new WorkflowTaskResponseDto(
                 savedTask.getId(),
@@ -135,6 +140,12 @@ public class WorkflowTaskService {
 
         WorkflowTask updatedTask =
                 workflowTaskRepository.save(task);
+
+        if (updatedTask.getStatus() == TaskStatus.COMPLETED
+                && hasCompletedOnboarding(updatedTask.getEmployee())) {
+            notificationService.sendCompletedOnboardingNotification(
+                    updatedTask.getEmployee());
+        }
 
         // Record task status update activity
         auditLogService.saveAuditLog(
@@ -218,5 +229,17 @@ public class WorkflowTaskService {
                 bottleneckTask,
                 maxCount
         );
+    }
+
+    private boolean hasCompletedOnboarding(Employee employee) {
+
+        List<WorkflowTask> employeeTasks =
+                workflowTaskRepository.findByEmployeeId(
+                        employee.getId());
+
+        return !employeeTasks.isEmpty()
+                && employeeTasks.stream()
+                .allMatch(task ->
+                        task.getStatus() == TaskStatus.COMPLETED);
     }
 }

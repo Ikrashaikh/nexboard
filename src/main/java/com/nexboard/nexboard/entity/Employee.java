@@ -37,4 +37,14 @@ public class Employee {
     @JsonIgnore
     @OneToMany(mappedBy = "employee")
     private List<WorkflowTask> workflowTasks;
+
+    // Documents uploaded by the employee during onboarding.
+    @JsonIgnore
+    @OneToMany(mappedBy = "employee")
+    private List<EmployeeDocument> employeeDocuments;
+
+    // Approval checkpoints created for this employee.
+    @JsonIgnore
+    @OneToMany(mappedBy = "employee")
+    private List<ApprovalRequest> approvalRequests;
 }
