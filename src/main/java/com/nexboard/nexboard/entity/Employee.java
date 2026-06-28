@@ -3,6 +3,8 @@ package com.nexboard.nexboard.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nexboard.nexboard.enums.EmployeeStatus;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,6 +34,23 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
+
+    // Date the employee officially joined the company.
+    private LocalDate joiningDate;
+
+    // Current employment status.
+    @Enumerated(EnumType.STRING)
+    private EmployeeStatus status;
+
+    // Self-referential relationship mapping an employee to their manager.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private Employee manager;
+
+    // Self-referential relationship mapping a manager to their direct reports.
+    @JsonIgnore
+    @OneToMany(mappedBy = "manager")
+    private List<Employee> subordinates;
 
     // One employee can have multiple onboarding tasks
     @JsonIgnore
