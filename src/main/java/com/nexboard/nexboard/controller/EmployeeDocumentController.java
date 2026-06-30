@@ -4,6 +4,7 @@ import com.nexboard.nexboard.dto.DocumentVerificationRequestDto;
 import com.nexboard.nexboard.dto.EmployeeDocumentResponseDto;
 import com.nexboard.nexboard.enums.DocumentType;
 import com.nexboard.nexboard.service.EmployeeDocumentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,13 @@ public class EmployeeDocumentController {
     public EmployeeDocumentController(
             EmployeeDocumentService employeeDocumentService) {
         this.employeeDocumentService = employeeDocumentService;
+    }
+
+    // Fetch all uploaded documents across all employees (HR/Admin only).
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR')")
+    public List<EmployeeDocumentResponseDto> getAllDocuments() {
+        return employeeDocumentService.getAllDocuments();
     }
 
     // Upload or replace an employee document.
@@ -37,7 +45,7 @@ public class EmployeeDocumentController {
 
     // Fetch all document metadata for one employee.
     @GetMapping("/employee/{employeeId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'EMPLOYEE')")
     public List<EmployeeDocumentResponseDto> getDocumentsByEmployee(
             @PathVariable Long employeeId) {
 
@@ -46,11 +54,19 @@ public class EmployeeDocumentController {
 
     // Fetch one document metadata record.
     @GetMapping("/{documentId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'EMPLOYEE')")
     public EmployeeDocumentResponseDto getDocumentById(
             @PathVariable Long documentId) {
 
         return employeeDocumentService.getDocumentById(documentId);
+    }
+
+    // Fetch secure document binary file contents for inline viewing or download.
+    @GetMapping("/{documentId}/file")
+    @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'EMPLOYEE')")
+    public ResponseEntity<byte[]> getDocumentFile(
+            @PathVariable Long documentId) {
+        return employeeDocumentService.getDocumentFile(documentId);
     }
 
     // Verify or reject an uploaded document.

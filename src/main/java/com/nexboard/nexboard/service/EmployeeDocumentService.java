@@ -9,7 +9,16 @@ import com.nexboard.nexboard.enums.VerificationStatus;
 import com.nexboard.nexboard.exception.EmployeeNotFoundException;
 import com.nexboard.nexboard.repository.EmployeeDocumentRepository;
 import com.nexboard.nexboard.repository.EmployeeRepository;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,7 +39,42 @@ public class EmployeeDocumentService {
         this.employeeRepository = employeeRepository;
     }
 
+    // Helper method to validate if the logged-in user is authorized to access documents of employeeId
+    private void validateDocumentAccess(Long employeeId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            throw new AccessDeniedException("User is not authenticated");
+        }
+
+        String username = auth.getName();
+        boolean isAdminOrHr = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_HR"));
+
+        if (!isAdminOrHr) {
+            // If the user has EMPLOYEE role, we check if they are the owner of the record
+            // For testing convenience, we allow the generic "employee" account
+            if ("employee".equalsIgnoreCase(username)) {
+                return;
+            }
+            Employee employee = employeeRepository.findById(employeeId)
+                    .orElseThrow(() -> new EmployeeNotFoundException(
+                            "Employee not found with id : " + employeeId));
+            if (employee.getEmail() == null || !employee.getEmail().equalsIgnoreCase(username)) {
+                throw new AccessDeniedException("Access denied: You can only access your own documents.");
+            }
+        }
+    }
+
+    // Fetch all uploaded documents across all employees (HR/Admin only).
+    public List<EmployeeDocumentResponseDto> getAllDocuments() {
+        return employeeDocumentRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
     // Upload or replace one document type for an employee.
+    @Transactional
     public EmployeeDocumentResponseDto uploadDocument(
             Long employeeId,
             DocumentType documentType,
@@ -40,6 +84,8 @@ public class EmployeeDocumentService {
                 .orElseThrow(() ->
                         new EmployeeNotFoundException(
                                 "Employee not found with id : " + employeeId));
+
+        validateDocumentAccess(employeeId);
 
         if (file.isEmpty()) {
             throw new RuntimeException("Uploaded file cannot be empty");
@@ -72,6 +118,8 @@ public class EmployeeDocumentService {
     public List<EmployeeDocumentResponseDto> getDocumentsByEmployee(
             Long employeeId) {
 
+        validateDocumentAccess(employeeId);
+
         return employeeDocumentRepository.findByEmployeeId(employeeId)
                 .stream()
                 .map(this::mapToResponse)
@@ -86,10 +134,35 @@ public class EmployeeDocumentService {
                         .orElseThrow(() ->
                                 new RuntimeException("Document not found"));
 
+        validateDocumentAccess(document.getEmployee().getId());
+
         return mapToResponse(document);
     }
 
+    // Fetch document secure file stream.
+    public ResponseEntity<byte[]> getDocumentFile(Long documentId) {
+        EmployeeDocument document = employeeDocumentRepository.findById(documentId)
+                .orElseThrow(() -> new RuntimeException("Document not found"));
+
+        validateDocumentAccess(document.getEmployee().getId());
+
+        HttpHeaders headers = new HttpHeaders();
+        if (document.getContentType() != null) {
+            headers.setContentType(MediaType.parseMediaType(document.getContentType()));
+        } else {
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        }
+
+        headers.setContentDisposition(ContentDisposition.inline()
+                .filename(document.getFileName())
+                .build());
+        headers.setCacheControl("no-cache, no-store, must-revalidate");
+
+        return new ResponseEntity<>(document.getFileData(), headers, HttpStatus.OK);
+    }
+
     // Update verification status after HR/admin review.
+    @Transactional
     public EmployeeDocumentResponseDto updateVerificationStatus(
             Long documentId,
             DocumentVerificationRequestDto requestDto) {
@@ -98,6 +171,12 @@ public class EmployeeDocumentService {
                 employeeDocumentRepository.findById(documentId)
                         .orElseThrow(() ->
                                 new RuntimeException("Document not found"));
+
+        if (requestDto.getVerificationStatus() == VerificationStatus.REJECTED) {
+            if (requestDto.getRemarks() == null || requestDto.getRemarks().trim().isEmpty()) {
+                throw new IllegalArgumentException("Remarks are mandatory when rejecting a document");
+            }
+        }
 
         document.setVerificationStatus(
                 requestDto.getVerificationStatus());

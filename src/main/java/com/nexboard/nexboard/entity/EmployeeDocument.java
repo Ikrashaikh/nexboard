@@ -5,6 +5,8 @@ import com.nexboard.nexboard.enums.VerificationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,8 +30,7 @@ public class EmployeeDocument {
 
     private Long fileSize;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
+    @JdbcTypeCode(SqlTypes.VARBINARY)
     private byte[] fileData;
 
     @Enumerated(EnumType.STRING)

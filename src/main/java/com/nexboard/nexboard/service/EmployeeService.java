@@ -9,6 +9,8 @@ import com.nexboard.nexboard.exception.EmployeeNotFoundException;
 import com.nexboard.nexboard.repository.DepartmentRepository;
 import com.nexboard.nexboard.repository.EmployeeRepository;
 import com.nexboard.nexboard.repository.EmployeeSpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,6 +25,8 @@ import java.util.List;
  */
 @Service
 public class EmployeeService {
+
+    private static final Logger log = LoggerFactory.getLogger(EmployeeService.class);
 
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
@@ -43,6 +47,7 @@ public class EmployeeService {
      * Create a new employee, assigning department, default joining date/status, and manager.
      */
     public EmployeeResponseDto createEmployee(EmployeeRequestDto requestDto) {
+        log.info("Creating employee: {} {}", requestDto.getFirstName(), requestDto.getLastName());
 
         // Fetch department using department id
         Department department = departmentRepository.findById(
@@ -80,6 +85,7 @@ public class EmployeeService {
         }
 
         Employee savedEmployee = employeeRepository.save(employee);
+        log.info("Employee created with ID: {}", savedEmployee.getId());
 
         notificationService.sendWelcomeEmployeeNotification(savedEmployee);
 
@@ -93,6 +99,7 @@ public class EmployeeService {
      * Fetch all employees in the system.
      */
     public List<EmployeeResponseDto> getAllEmployees() {
+        log.debug("Fetching all employees");
         return employeeRepository.findAll()
                 .stream()
                 .map(this::convertToDto)
@@ -103,6 +110,7 @@ public class EmployeeService {
      * Fetch employee by ID.
      */
     public EmployeeResponseDto getEmployeeById(Long id) {
+        log.debug("Fetching employee with ID: {}", id);
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() ->
                         new EmployeeNotFoundException(
@@ -121,6 +129,7 @@ public class EmployeeService {
                                                      String managerName,
                                                      Long managerId,
                                                      Pageable pageable) {
+        log.debug("Searching employees with filters - name: {}, department: {}, status: {}", name, department, status);
         Specification<Employee> spec = null;
 
         if (name != null && !name.trim().isEmpty()) {

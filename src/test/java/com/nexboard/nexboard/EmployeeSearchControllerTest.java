@@ -45,6 +45,12 @@ public class EmployeeSearchControllerTest {
     private DepartmentRepository departmentRepository;
 
     @Autowired
+    private WorkflowTemplateRepository workflowTemplateRepository;
+
+    @Autowired
+    private WorkflowStageRepository workflowStageRepository;
+
+    @Autowired
     private WorkflowTaskRepository workflowTaskRepository;
 
     @Autowired
@@ -81,6 +87,8 @@ public class EmployeeSearchControllerTest {
         // Clean up database records in order of dependency to prevent foreign key violations
         notificationRepository.deleteAll();
         workflowTaskRepository.deleteAll();
+        workflowStageRepository.deleteAll();
+        workflowTemplateRepository.deleteAll();
         employeeDocumentRepository.deleteAll();
         approvalHistoryRepository.deleteAll();
         approvalRequestRepository.deleteAll();

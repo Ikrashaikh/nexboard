@@ -17,7 +17,7 @@ public class User {
     private Long id;
 
     // Login username
-    @column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String username;
 
     // Encoded password

@@ -2,6 +2,8 @@ package com.nexboard.nexboard.exception;
 
 import com.nexboard.nexboard.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     /**
      * Handles validation errors coming from {@code @Valid} constraints.
      */
@@ -25,6 +29,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
+        log.warn("Validation failed for request {}: {}", request.getRequestURI(), ex.getMessage());
 
         String errorMessage = "Validation failed";
         if (ex.getBindingResult().getFieldError() != null) {
@@ -55,6 +60,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleEmployeeNotFoundException(
             EmployeeNotFoundException ex, HttpServletRequest request) {
+        log.warn("Resource not found at {}: {}", request.getRequestURI(), ex.getMessage());
 
         return new ErrorResponse(
                 ex.getMessage(),
@@ -73,6 +79,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGenericException(
             Exception ex, HttpServletRequest request) {
+        log.error("Unhandled exception at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
 
         return new ErrorResponse(
                 ex.getMessage() != null ? ex.getMessage() : "An unexpected server error occurred",
