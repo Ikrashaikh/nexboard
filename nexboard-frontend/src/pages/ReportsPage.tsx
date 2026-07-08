@@ -9,7 +9,7 @@ type Tab = 'employees' | 'departments' | 'sla' | 'readiness' | 'audit';
 
 export default function ReportsPage() {
   const { auth } = useAuth();
-  const canAudit = ['ADMIN', 'HR'].includes(auth?.role ?? '');
+  const canAudit = ['ROLE_ADMIN', 'ROLE_HR'].includes(auth?.role ?? '');
   const [tab, setTab] = useState<Tab>('employees');
   const [data, setData] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(false);

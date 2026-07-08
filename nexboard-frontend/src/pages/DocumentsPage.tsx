@@ -12,9 +12,9 @@ const DOC_TYPES: DocumentType[] = ['OFFER_LETTER','AADHAR','PAN','PASSPORT','EDU
 
 export default function DocumentsPage() {
   const { auth, employeeId } = useAuth();
-  const isEmployee = auth?.role === 'EMPLOYEE';
-  const canVerify = ['ADMIN','HR'].includes(auth?.role ?? '');
-  const canUpload = ['ADMIN','HR','EMPLOYEE'].includes(auth?.role ?? '');
+  const isEmployee = auth?.role === 'ROLE_EMPLOYEE';
+  const canVerify = ['ROLE_ADMIN','ROLE_HR'].includes(auth?.role ?? '');
+  const canUpload = ['ROLE_ADMIN','ROLE_HR','ROLE_EMPLOYEE'].includes(auth?.role ?? '');
 
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [selectedEmp, setSelectedEmp] = useState<number | null>(isEmployee ? employeeId : null);

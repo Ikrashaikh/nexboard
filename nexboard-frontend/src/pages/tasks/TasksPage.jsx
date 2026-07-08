@@ -14,8 +14,8 @@ import { Plus, CheckSquare, UserSearch } from 'lucide-react';
 
 export default function TasksPage() {
   const { auth, selectedEmployeeId } = useAuth();
-  const isEmployee = auth?.role === 'EMPLOYEE';
-  const canCreate  = ['ADMIN','HR','MANAGER'].includes(auth?.role);
+  const isEmployee = auth?.role === 'ROLE_EMPLOYEE';
+  const canCreate  = ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'].includes(auth?.role);
 
   const [employees, setEmployees]   = useState([]);
   const [selectedEmp, setSelectedEmp] = useState(isEmployee ? selectedEmployeeId : null);

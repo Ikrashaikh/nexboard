@@ -25,7 +25,7 @@ export default function EmployeeProfilePage() {
     // Optimistically set — if the ID is wrong tasks page will fail gracefully
     setSelectedEmployeeId(id);
     toast.success(`Profile set to Employee #${id}`);
-    navigate('/tasks');
+    navigate('/my');
     setLoading(false);
   };
 

@@ -10,7 +10,7 @@ import { Plus, ChevronDown, ChevronRight } from 'lucide-react';
 
 export default function TemplatesPage() {
   const { auth } = useAuth();
-  const canEdit = ['ADMIN', 'HR'].includes(auth?.role ?? '');
+  const canEdit = ['ROLE_ADMIN', 'ROLE_HR'].includes(auth?.role ?? '');
 
   const [templates, setTemplates] = useState<WorkflowTemplateResponse[]>([]);
   const [departments, setDepartments] = useState<DepartmentResponse[]>([]);
@@ -152,7 +152,7 @@ export default function TemplatesPage() {
                   )}
 
                   {/* Assign to employee */}
-                  {['ADMIN','HR','MANAGER'].includes(auth?.role ?? '') && (
+                  {['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'].includes(auth?.role ?? '') && (
                     <div className="flex items-center gap-3 mt-3">
                       <label className="text-xs font-medium text-slate-600">Assign to employee:</label>
                       <select

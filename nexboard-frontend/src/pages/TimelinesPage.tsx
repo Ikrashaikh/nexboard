@@ -8,7 +8,7 @@ import { Clock } from 'lucide-react';
 
 export default function TimelinesPage() {
   const { auth, employeeId } = useAuth();
-  const isEmployee = auth?.role === 'EMPLOYEE';
+  const isEmployee = auth?.role === 'ROLE_EMPLOYEE';
 
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [selectedEmp, setSelectedEmp] = useState<number | null>(isEmployee ? employeeId : null);

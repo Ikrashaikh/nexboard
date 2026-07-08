@@ -32,9 +32,9 @@ import {
 
 export default function DocumentsPage() {
   const { auth, selectedEmployeeId } = useAuth();
-  const isEmployee = auth?.role === 'EMPLOYEE';
-  const canVerify  = ['ADMIN', 'HR'].includes(auth?.role);
-  const canUpload  = ['ADMIN', 'HR', 'EMPLOYEE'].includes(auth?.role);
+  const isEmployee = auth?.role === 'ROLE_EMPLOYEE';
+  const canVerify  = ['ROLE_ADMIN', 'ROLE_HR'].includes(auth?.role);
+  const canUpload  = ['ROLE_ADMIN', 'ROLE_HR', 'ROLE_EMPLOYEE'].includes(auth?.role);
 
   // Tabs for HR/Admin: 'queue' (Verification Queue) or 'browse' (Browse by Employee)
   const [activeTab, setActiveTab] = useState(isEmployee ? 'browse' : 'queue');

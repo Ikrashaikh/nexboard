@@ -1,5 +1,5 @@
 // ── Auth ──────────────────────────────────────────────────────────────────────
-export type Role = 'ADMIN' | 'HR' | 'MANAGER' | 'EMPLOYEE';
+export type Role = 'ROLE_ADMIN' | 'ROLE_HR' | 'ROLE_MANAGER' | 'ROLE_EMPLOYEE';
 
 export interface AuthUser {
   token: string;

@@ -13,7 +13,7 @@ import { Plus, ChevronDown, ChevronRight, GitBranch } from 'lucide-react';
 
 export default function TemplatesPage() {
   const { auth } = useAuth();
-  const canEdit = ['ADMIN','HR'].includes(auth?.role);
+  const canEdit = ['ROLE_ADMIN','ROLE_HR'].includes(auth?.role);
 
   const { data: templates, loading, refetch } = useFetch(getTemplates);
   const [departments, setDepartments]         = useState([]);
@@ -156,7 +156,7 @@ export default function TemplatesPage() {
                       ))}
                     </div>
                   )}
-                  {['ADMIN','HR','MANAGER'].includes(auth?.role) && (
+                  {['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'].includes(auth?.role) && (
                     <div className="flex items-center gap-3 mt-2">
                       <label className="text-caption font-medium">Assign to:</label>
                       <select

@@ -5,38 +5,40 @@ import {
   LayoutDashboard, Users, Building2, UserCheck, GitBranch,
   CheckSquare, ShieldCheck, FileText, Bell, AlertTriangle,
   BarChart2, ClipboardList, LogOut, Menu, X, Clock,
-  Layers, ChevronRight, RefreshCw,
+  Layers, ChevronRight, RefreshCw, User,
 } from 'lucide-react';
 
 const ALL_NAV = [
   { section: 'Overview' },
-  { to: '/dashboard',    label: 'Dashboard',     icon: LayoutDashboard, roles: ['ADMIN','HR','MANAGER'] },
+  { to: '/dashboard',    label: 'Dashboard',     icon: LayoutDashboard, roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/my',           label: 'My Portal',     icon: User,            roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
   { section: 'People' },
-  { to: '/employees',    label: 'Employees',     icon: UserCheck,       roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/departments',  label: 'Departments',   icon: Building2,       roles: ['ADMIN','HR'] },
-  { to: '/users',        label: 'Users',         icon: Users,           roles: ['ADMIN'] },
+  { to: '/employees',    label: 'Employees',     icon: UserCheck,       roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/departments',  label: 'Departments',   icon: Building2,       roles: ['ROLE_ADMIN','ROLE_HR'] },
+  { to: '/users',        label: 'Users',         icon: Users,           roles: ['ROLE_ADMIN'] },
   { section: 'Onboarding' },
-  { to: '/templates',    label: 'Templates',     icon: GitBranch,       roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/tasks',        label: 'Tasks',         icon: CheckSquare,     roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/approvals',    label: 'Approvals',     icon: ShieldCheck,     roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/documents',    label: 'Documents',     icon: FileText,        roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/timelines',    label: 'Timelines',     icon: Clock,           roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
+  { to: '/templates',    label: 'Templates',     icon: GitBranch,       roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/tasks',        label: 'Tasks',         icon: CheckSquare,     roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/approvals',    label: 'Approvals',     icon: ShieldCheck,     roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/documents',    label: 'Documents',     icon: FileText,        roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/timelines',    label: 'Timelines',     icon: Clock,           roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
   { section: 'Insights' },
-  { to: '/notifications',label: 'Notifications', icon: Bell,            roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/escalations',  label: 'Escalations',   icon: AlertTriangle,   roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/analytics',    label: 'Analytics',     icon: BarChart2,       roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/reports',      label: 'Reports',       icon: ClipboardList,   roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/audit-logs',   label: 'Audit Logs',    icon: ClipboardList,   roles: ['ADMIN','HR'] },
+  { to: '/notifications',label: 'Notifications', icon: Bell,            roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/escalations',  label: 'Escalations',   icon: AlertTriangle,   roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/analytics',    label: 'Analytics',     icon: BarChart2,       roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/reports',      label: 'Reports',       icon: ClipboardList,   roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/audit-logs',   label: 'Audit Logs',    icon: ClipboardList,   roles: ['ROLE_ADMIN','ROLE_HR'] },
 ];
 
 const ROLE_CONFIG = {
-  ADMIN:    { color: 'bg-red-500/20 text-red-300',      dot: 'bg-red-400' },
-  HR:       { color: 'bg-purple-500/20 text-purple-300',dot: 'bg-purple-400' },
-  MANAGER:  { color: 'bg-blue-500/20 text-blue-300',    dot: 'bg-blue-400' },
-  EMPLOYEE: { color: 'bg-green-500/20 text-green-300',  dot: 'bg-green-400' },
+  ROLE_ADMIN:    { color: 'bg-red-500/20 text-red-300',      dot: 'bg-red-400' },
+  ROLE_HR:       { color: 'bg-purple-500/20 text-purple-300',dot: 'bg-purple-400' },
+  ROLE_MANAGER:  { color: 'bg-blue-500/20 text-blue-300',    dot: 'bg-blue-400' },
+  ROLE_EMPLOYEE: { color: 'bg-green-500/20 text-green-300',  dot: 'bg-green-400' },
 };
 
 const PAGE_TITLES = {
+  '/my':           'My Portal',
   '/dashboard':    'Dashboard',
   '/employees':    'Employees',
   '/departments':  'Departments',
@@ -57,7 +59,7 @@ function Sidebar({ onClose }) {
   const { auth, logout, clearSelectedEmployee } = useAuth();
   const navigate = useNavigate();
   const role = auth?.role ?? '';
-  const roleConfig = ROLE_CONFIG[role] ?? ROLE_CONFIG.EMPLOYEE;
+  const roleConfig = ROLE_CONFIG[role] ?? ROLE_CONFIG.ROLE_EMPLOYEE;
 
   const navItems = ALL_NAV.filter(n =>
     n.section !== undefined || n.roles?.includes(role)
@@ -132,7 +134,7 @@ function Sidebar({ onClose }) {
 
       {/* Footer */}
       <div className="px-3 py-3 border-t border-white/10 space-y-1">
-        {role === 'EMPLOYEE' && (
+        {role === 'ROLE_EMPLOYEE' && (
           <button
             onClick={() => { clearSelectedEmployee(); navigate('/employee-profile'); onClose?.(); }}
             className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-xs text-slate-400 hover:bg-white/8 hover:text-white transition-all cursor-pointer">

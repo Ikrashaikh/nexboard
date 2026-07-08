@@ -23,7 +23,7 @@ const statusDot = (s) => {
 
 export default function TimelinesPage() {
   const { auth, selectedEmployeeId } = useAuth();
-  const isEmployee = auth?.role === 'EMPLOYEE';
+  const isEmployee = auth?.role === 'ROLE_EMPLOYEE';
 
   const [employees, setEmployees]   = useState([]);
   const [selectedEmp, setSelectedEmp] = useState(isEmployee ? selectedEmployeeId : null);

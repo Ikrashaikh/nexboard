@@ -17,8 +17,8 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const { data } = await authService.login(username, password);
-      // Strip ROLE_ prefix if backend ever returns it
-      const role = data.role.replace('ROLE_', '') as typeof data.role;
+      // Ensure ROLE_ prefix is present
+      const role = (data.role.startsWith('ROLE_') ? data.role : 'ROLE_' + data.role) as typeof data.role;
       login({ ...data, role });
       toast.success(`Welcome, ${data.username}`);
       navigate('/dashboard');

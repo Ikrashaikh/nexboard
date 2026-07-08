@@ -9,9 +9,9 @@ import toast from 'react-hot-toast';
 
 export default function ApprovalsPage() {
   const { auth, employeeId } = useAuth();
-  const isEmployee = auth?.role === 'EMPLOYEE';
-  const canDecide = ['ADMIN','HR','MANAGER'].includes(auth?.role ?? '');
-  const canInit = ['ADMIN','HR'].includes(auth?.role ?? '');
+  const isEmployee = auth?.role === 'ROLE_EMPLOYEE';
+  const canDecide = ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'].includes(auth?.role ?? '');
+  const canInit = ['ROLE_ADMIN','ROLE_HR'].includes(auth?.role ?? '');
 
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [selectedEmp, setSelectedEmp] = useState<number | null>(isEmployee ? employeeId : null);

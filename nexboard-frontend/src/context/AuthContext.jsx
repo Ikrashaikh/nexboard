@@ -13,8 +13,8 @@ export function AuthProvider({ children }) {
   });
 
   const login = useCallback((authData) => {
-    // Strip ROLE_ prefix if backend ever returns it
-    const cleaned = { ...authData, role: authData.role.replace('ROLE_', '') };
+    // Ensure ROLE_ prefix is present
+    const cleaned = { ...authData, role: authData.role.startsWith('ROLE_') ? authData.role : 'ROLE_' + authData.role };
     setAuth(cleaned);
     localStorage.setItem('auth', JSON.stringify(cleaned));
   }, []);

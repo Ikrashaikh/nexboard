@@ -16,20 +16,20 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { to: '/dashboard',       label: 'Dashboard',       icon: <LayoutDashboard size={18} />, roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/employees',       label: 'Employees',       icon: <UserCheck size={18} />,       roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/departments',     label: 'Departments',     icon: <Building2 size={18} />,       roles: ['ADMIN','HR'] },
-  { to: '/users',           label: 'Users',           icon: <Users size={18} />,           roles: ['ADMIN'] },
-  { to: '/templates',       label: 'Templates',       icon: <GitBranch size={18} />,       roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/tasks',           label: 'Tasks',           icon: <CheckSquare size={18} />,     roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/approvals',       label: 'Approvals',       icon: <ShieldCheck size={18} />,     roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/documents',       label: 'Documents',       icon: <FileText size={18} />,        roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/timelines',       label: 'Timelines',       icon: <Clock size={18} />,           roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/notifications',   label: 'Notifications',   icon: <Bell size={18} />,            roles: ['ADMIN','HR','MANAGER','EMPLOYEE'] },
-  { to: '/escalations',     label: 'Escalations',     icon: <AlertTriangle size={18} />,   roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/analytics',       label: 'Analytics',       icon: <BarChart2 size={18} />,       roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/reports',         label: 'Reports',         icon: <ClipboardList size={18} />,   roles: ['ADMIN','HR','MANAGER'] },
-  { to: '/audit-logs',      label: 'Audit Logs',      icon: <ClipboardList size={18} />,   roles: ['ADMIN','HR'] },
+  { to: '/dashboard',       label: 'Dashboard',       icon: <LayoutDashboard size={18} />, roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/employees',       label: 'Employees',       icon: <UserCheck size={18} />,       roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/departments',     label: 'Departments',     icon: <Building2 size={18} />,       roles: ['ROLE_ADMIN','ROLE_HR'] },
+  { to: '/users',           label: 'Users',           icon: <Users size={18} />,           roles: ['ROLE_ADMIN'] },
+  { to: '/templates',       label: 'Templates',       icon: <GitBranch size={18} />,       roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/tasks',           label: 'Tasks',           icon: <CheckSquare size={18} />,     roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/approvals',       label: 'Approvals',       icon: <ShieldCheck size={18} />,     roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/documents',       label: 'Documents',       icon: <FileText size={18} />,        roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/timelines',       label: 'Timelines',       icon: <Clock size={18} />,           roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/notifications',   label: 'Notifications',   icon: <Bell size={18} />,            roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER','ROLE_EMPLOYEE'] },
+  { to: '/escalations',     label: 'Escalations',     icon: <AlertTriangle size={18} />,   roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/analytics',       label: 'Analytics',       icon: <BarChart2 size={18} />,       roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/reports',         label: 'Reports',         icon: <ClipboardList size={18} />,   roles: ['ROLE_ADMIN','ROLE_HR','ROLE_MANAGER'] },
+  { to: '/audit-logs',      label: 'Audit Logs',      icon: <ClipboardList size={18} />,   roles: ['ROLE_ADMIN','ROLE_HR'] },
 ];
 
 export default function Layout() {

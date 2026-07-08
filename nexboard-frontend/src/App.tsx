@@ -31,7 +31,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 // EMPLOYEE role must pick their employee profile before accessing the app
 function RequireEmployeeProfile({ children }: { children: React.ReactNode }) {
   const { auth, employeeId } = useAuth();
-  if (auth?.role === 'EMPLOYEE' && !employeeId) return <EmployeePicker />;
+  if (auth?.role === 'ROLE_EMPLOYEE' && !employeeId) return <EmployeePicker />;
   return <>{children}</>;
 }
 
@@ -40,7 +40,7 @@ function AppRoutes() {
   const role = auth?.role;
 
   // Default landing page by role
-  const home = role === 'EMPLOYEE' ? '/tasks' : '/dashboard';
+  const home = role === 'ROLE_EMPLOYEE' ? '/tasks' : '/dashboard';
 
   return (
     <Routes>

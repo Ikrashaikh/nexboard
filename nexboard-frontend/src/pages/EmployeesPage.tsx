@@ -12,7 +12,7 @@ import { Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 export default function EmployeesPage() {
   const { auth } = useAuth();
   const navigate = useNavigate();
-  const canCreate = auth?.role === 'ADMIN' || auth?.role === 'HR';
+  const canCreate = auth?.role === 'ROLE_ADMIN' || auth?.role === 'ROLE_HR';
 
   const [employees, setEmployees] = useState<EmployeeResponse[]>([]);
   const [departments, setDepartments] = useState<DepartmentResponse[]>([]);

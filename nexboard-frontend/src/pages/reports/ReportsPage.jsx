@@ -77,7 +77,7 @@ function Row({ tab, row }) {
 
 export default function ReportsPage() {
   const { auth } = useAuth();
-  const canAudit = ['ADMIN','HR'].includes(auth?.role);
+  const canAudit = ['ROLE_ADMIN','ROLE_HR'].includes(auth?.role);
   const tabs = canAudit ? ADMIN_HR_TABS : TABS;
 
   const [tab, setTab] = useState('employees');

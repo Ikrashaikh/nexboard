@@ -16,7 +16,7 @@ import { Plus, Search, X, UserCheck } from 'lucide-react';
 export default function EmployeesPage() {
   const { auth } = useAuth();
   const navigate = useNavigate();
-  const canCreate = ['ADMIN','HR'].includes(auth?.role);
+  const canCreate = ['ROLE_ADMIN','ROLE_HR'].includes(auth?.role);
 
   const [employees, setEmployees]     = useState([]);
   const [departments, setDepartments] = useState([]);

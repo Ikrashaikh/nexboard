@@ -12,7 +12,7 @@ import { Bell } from 'lucide-react';
 
 export default function NotificationsPage() {
   const { auth, selectedEmployeeId } = useAuth();
-  const isEmployee = auth?.role === 'EMPLOYEE';
+  const isEmployee = auth?.role === 'ROLE_EMPLOYEE';
 
   const [notifications, setNotifications] = useState([]);
   const [employees, setEmployees]         = useState([]);
